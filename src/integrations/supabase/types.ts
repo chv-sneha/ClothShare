@@ -14,7 +14,158 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      donation_centers: {
+        Row: {
+          address: string
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          needs_gender: string[] | null
+          needs_season: string[] | null
+          needs_types: string[] | null
+          phone: string | null
+          priority: string | null
+          type: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          needs_gender?: string[] | null
+          needs_season?: string[] | null
+          needs_types?: string[] | null
+          phone?: string | null
+          priority?: string | null
+          type: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          latitude?: number
+          longitude?: number
+          name?: string
+          needs_gender?: string[] | null
+          needs_season?: string[] | null
+          needs_types?: string[] | null
+          phone?: string | null
+          priority?: string | null
+          type?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          ai_match_reason: string | null
+          center_id: string | null
+          created_at: string
+          id: string
+          items: Json
+          match_score: number | null
+          notes: string | null
+          scheduled_date: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_match_reason?: string | null
+          center_id?: string | null
+          created_at?: string
+          id?: string
+          items?: Json
+          match_score?: number | null
+          notes?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_match_reason?: string | null
+          center_id?: string | null
+          created_at?: string
+          id?: string
+          items?: Json
+          match_score?: number | null
+          notes?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "donation_centers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          location_address: string | null
+          location_lat: number | null
+          location_lng: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          location_address?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          location_address?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
