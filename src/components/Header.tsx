@@ -23,12 +23,7 @@ export function Header() {
     navigate('/');
   };
 
-  const navLinks = [
-    { href: '/#how-it-works', label: 'How It Works' },
-    { href: '/#donate-form', label: 'Donate' },
-    { href: '/centers', label: 'Centers', icon: MapPin },
-    ...(user ? [{ href: '/dashboard', label: 'My Donations', icon: History }] : []),
-  ];
+
 
   return (
     <motion.header
@@ -53,19 +48,7 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
-              >
-                {link.icon && <link.icon className="w-4 h-4" />}
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+
 
           {/* Auth Section */}
           <div className="hidden md:flex items-center gap-3">
@@ -160,27 +143,10 @@ export function Header() {
               className="md:hidden overflow-hidden"
             >
               <nav className="py-4 border-t border-border flex flex-col gap-4">
-                {navLinks.map((link, i) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <Link
-                      to={link.href}
-                      className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {link.icon && <link.icon className="w-4 h-4" />}
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                ))}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navLinks.length * 0.1 }}
+                  transition={{ delay: 0.1 }}
                 >
                   {user ? (
                     <div className="space-y-3 pt-2">
