@@ -95,9 +95,12 @@ export function MatchResults({ results, onReset }: MatchResultsProps) {
                 {/* Image */}
                 <div className="relative h-64 md:h-auto">
                   <img 
-                    src={topMatch.center.image} 
+                    src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=500&h=300&fit=crop" 
                     alt={topMatch.center.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=500&h=300&fit=crop';
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent md:bg-gradient-to-r" />
                 </div>
@@ -140,13 +143,20 @@ export function MatchResults({ results, onReset }: MatchResultsProps) {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <Button className="gradient-warm text-primary-foreground flex-1">
+                    <Button 
+                      className="gradient-warm text-primary-foreground flex-1"
+                      onClick={() => window.location.href = '/tracking'}
+                    >
                       <Heart className="w-4 h-4 mr-2" />
                       Donate Here
                     </Button>
-                    <Button variant="outline" className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center gap-2"
+                      onClick={() => window.open(`tel:${topMatch.center.phone}`, '_self')}
+                    >
                       <Phone className="w-4 h-4" />
-                      {topMatch.center.contact}
+                      Call Now
                     </Button>
                   </div>
                 </CardContent>
@@ -167,9 +177,12 @@ export function MatchResults({ results, onReset }: MatchResultsProps) {
                   >
                     <div className="relative h-40">
                       <img 
-                        src={match.center.image} 
+                        src={`https://images.unsplash.com/photo-${index % 2 === 0 ? '1559027615-cd4628902d4a' : '1582213782179-283e7fedd4c'}?w=400&h=200&fit=crop`}
                         alt={match.center.name}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=200&fit=crop';
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
                       <div className="absolute bottom-3 left-3 right-3">

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Heart, LogIn, HelpCircle, Gift, History, MapPin, Menu, X, Loader2 } from 'lucide-react';
+import { Heart, LogIn, HelpCircle, Gift, History, MapPin, Menu, X, Loader2, LogOut, User, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from '@/hooks/useLocation';
@@ -20,7 +20,7 @@ interface HeroProps {
 
 export function Hero({ onGetStarted }: HeroProps) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -71,11 +71,11 @@ export function Hero({ onGetStarted }: HeroProps) {
               Centers
             </button>
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/rag-demo')}
               className="text-white/90 hover:text-white transition-colors flex items-center gap-2 text-sm xl:text-base"
             >
-              <History className="w-4 h-4" />
-              History
+              <Brain className="w-4 h-4" />
+              AI Demo
             </button>
           </div>
           

@@ -8,6 +8,10 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Centers from "./pages/Centers";
+import { EnhancedCenters } from "./pages/EnhancedCenters";
+import { DonationTracking } from "./pages/DonationTracking";
+import { AdminDashboard } from "./pages/AdminDashboard";
+import { RAGDemo } from "./components/RAGDemo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,8 +27,10 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/centers" element={<Centers />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/centers" element={<EnhancedCenters />} />
+            <Route path="/tracking" element={<DonationTracking />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/rag-demo" element={<RAGDemo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
