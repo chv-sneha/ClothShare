@@ -1,9 +1,17 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Heart, LogIn, HelpCircle, Gift, History, MapPin, Menu, X } from 'lucide-react';
+import { Heart, LogIn, HelpCircle, Gift, History, MapPin, Menu, X, LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 interface HeroProps {
   onGetStarted: () => void;
@@ -11,8 +19,13 @@ interface HeroProps {
 
 export function Hero({ onGetStarted }: HeroProps) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden">
@@ -66,7 +79,41 @@ export function Hero({ onGetStarted }: HeroProps) {
           
           {/* Desktop Sign In */}
           <div className="hidden sm:block">
-            {!user && (
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/20">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {(user.user_metadata?.full_name || user.email?.split('@')[0] || 'User').charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-medium text-sm">{user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    <History className="mr-2 h-4 w-4" />
+                    My Donations
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/centers')}>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Find Centers
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   onClick={() => navigate('/auth')}
@@ -163,7 +210,34 @@ export function Hero({ onGetStarted }: HeroProps) {
                   <History className="w-4 h-4" />
                   History
                 </button>
-                {!user && (
+                {user ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-white/90 text-sm">
+                      <User className="w-4 h-4" />
+                      {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                    </div>
+                    <Button
+                      onClick={() => {
+                        navigate('/dashboard');
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 transition-all"
+                    >
+                      <History className="w-4 h-4 mr-2" />
+                      My Donations
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        handleSignOut();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 transition-all"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
                   <Button
                     onClick={() => {
                       navigate('/auth');
