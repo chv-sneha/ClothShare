@@ -1,157 +1,223 @@
-import { motion } from 'framer-motion';
-import { Heart, ArrowDown, Sparkles, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { useLocation } from '@/hooks/useLocation';
-import { Badge } from '@/components/ui/badge';
+import { Heart, LogIn, HelpCircle, Gift, History, MapPin, Menu, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useState } from 'react';
 
 interface HeroProps {
   onGetStarted: () => void;
 }
 
 export function Hero({ onGetStarted }: HeroProps) {
-  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center gradient-hero overflow-hidden">
-      {/* Animated floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[
-          { top: '15%', left: '8%', size: 80, delay: 0, color: 'bg-primary/15' },
-          { top: '25%', right: '12%', size: 60, delay: 0.5, color: 'bg-secondary/40' },
-          { bottom: '30%', left: '20%', size: 50, delay: 1, color: 'bg-accent/15' },
-          { bottom: '15%', right: '25%', size: 90, delay: 1.5, color: 'bg-primary/10' },
-        ].map((shape, i) => (
-          <motion.div
-            key={i}
-            animate={{ y: [0, -15, 0], scale: [1, 1.05, 1] }}
-            transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeInOut' }}
-            className={`absolute rounded-full ${shape.color}`}
-            style={{
-              top: shape.top,
-              left: shape.left,
-              right: shape.right,
-              bottom: shape.bottom,
-              width: shape.size,
-              height: shape.size,
-            }}
-          />
-        ))}
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden">
+      {/* Navigation overlay on SVG */}
+      <div className="absolute top-0 left-0 right-0 z-20 p-4 sm:p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <motion.div
+              whileHover={{ rotate: [0, -10, 10, 0] }}
+              transition={{ duration: 0.5 }}
+              className="w-8 h-8 sm:w-10 sm:h-10 gradient-warm rounded-xl flex items-center justify-center"
+            >
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
+            </motion.div>
+            <span className="font-display font-bold text-lg sm:text-xl text-white drop-shadow-lg">
+              ClothShare
+            </span>
+          </div>
+          
+          {/* Desktop Navigation Items */}
+          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+            <button 
+              onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+              className="text-white/90 hover:text-white transition-colors flex items-center gap-2 text-sm xl:text-base"
+            >
+              <HelpCircle className="w-4 h-4" />
+              How it works
+            </button>
+            <button 
+              onClick={onGetStarted}
+              className="text-white/90 hover:text-white transition-colors flex items-center gap-2 text-sm xl:text-base"
+            >
+              <Gift className="w-4 h-4" />
+              Donate
+            </button>
+            <button 
+              onClick={() => navigate('/centers')}
+              className="text-white/90 hover:text-white transition-colors flex items-center gap-2 text-sm xl:text-base"
+            >
+              <MapPin className="w-4 h-4" />
+              Centers
+            </button>
+            <button 
+              onClick={() => navigate('/dashboard')}
+              className="text-white/90 hover:text-white transition-colors flex items-center gap-2 text-sm xl:text-base"
+            >
+              <History className="w-4 h-4" />
+              History
+            </button>
+          </div>
+          
+          {/* Desktop Sign In */}
+          <div className="hidden sm:block">
+            {!user && (
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  onClick={() => navigate('/auth')}
+                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 transition-all text-sm"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign In
+                </Button>
+              </motion.div>
+            )}
+          </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-4xl mx-auto text-center"
-        >
-          {/* Location Badge */}
-          {!location.loading && !location.error && location.address && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-              <Badge variant="outline" className="px-4 py-2 bg-card/80 backdrop-blur-sm">
-                <MapPin className="w-3 h-3 mr-1 text-primary" />
-                <span className="text-xs">{location.address.split(',').slice(0, 2).join(',')}</span>
-              </Badge>
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden text-white hover:bg-white/20"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <AnimatePresence mode="wait">
+              {isMenuOpen ? (
+                <motion.div
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <X className="w-5 h-5" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Menu className="w-5 h-5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Button>
+        </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="lg:hidden overflow-hidden mt-4"
+            >
+              <div className="bg-black/20 backdrop-blur-md rounded-lg p-4 space-y-3">
+                <button 
+                  onClick={() => {
+                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full text-left text-white/90 hover:text-white transition-colors flex items-center gap-3 p-2 rounded hover:bg-white/10"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  How it works
+                </button>
+                <button 
+                  onClick={() => {
+                    onGetStarted();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full text-left text-white/90 hover:text-white transition-colors flex items-center gap-3 p-2 rounded hover:bg-white/10"
+                >
+                  <Gift className="w-4 h-4" />
+                  Donate
+                </button>
+                <button 
+                  onClick={() => {
+                    navigate('/centers');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full text-left text-white/90 hover:text-white transition-colors flex items-center gap-3 p-2 rounded hover:bg-white/10"
+                >
+                  <MapPin className="w-4 h-4" />
+                  Centers
+                </button>
+                <button 
+                  onClick={() => {
+                    navigate('/dashboard');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full text-left text-white/90 hover:text-white transition-colors flex items-center gap-3 p-2 rounded hover:bg-white/10"
+                >
+                  <History className="w-4 h-4" />
+                  History
+                </button>
+                {!user && (
+                  <Button
+                    onClick={() => {
+                      navigate('/auth');
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 transition-all mt-3"
+                  >
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Sign In
+                  </Button>
+                )}
+              </div>
             </motion.div>
           )}
-
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-soft mb-8"
-          >
-            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-            <span className="text-sm font-medium text-muted-foreground">AI-Powered Smart Matching</span>
-          </motion.div>
-
-          {/* Main heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-foreground mb-6"
-          >
-            Give Clothes a{' '}
-            <span className="relative inline-block">
-              <span className="relative z-10 text-primary">Second Life</span>
-              <motion.span
-                className="absolute -bottom-2 left-0 right-0 h-3 bg-primary/20 -rotate-1"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-              />
-            </span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
-          >
-            Connect your unused clothes with the right donation centers.
-            Our AI finds the perfect match between what you have and who needs it most.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                size="lg"
-                onClick={onGetStarted}
-                className="gradient-warm text-primary-foreground px-8 py-6 text-lg font-semibold shadow-elevated hover:shadow-card transition-shadow"
-              >
-                <Heart className="w-5 h-5 mr-2" />
-                Start Donating
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                variant="outline"
-                size="lg"
-                className="px-8 py-6 text-lg border-2 hover:bg-secondary/50 transition-colors"
-                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                How It Works
-              </Button>
-            </motion.div>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto"
-          >
-            {[
-              { value: '500+', label: 'Clothes Donated' },
-              { value: '15+', label: 'Partner Centers' },
-              { value: '98%', label: 'Match Accuracy' },
-            ].map((stat) => (
-              <motion.div key={stat.label} className="text-center" whileHover={{ y: -5 }}>
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll indicator */}
+        </AnimatePresence>
+      </div>
+      {/* SVG Background */}
+      <div className="absolute inset-0 w-full h-full">
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          className="w-full h-full flex items-center justify-center"
         >
-          <ArrowDown className="w-6 h-6 text-muted-foreground" />
+          <img 
+            src="/Gold Modern Donations to Humanity YouTube Thumbnail.svg" 
+            alt="ClothShare - Donations to Humanity" 
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+      </div>
+
+      {/* Overlay content */}
+      <div className="relative z-10 container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="text-center mt-16 sm:mt-0"
+        >
+          {/* CTA Button */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="mb-8"
+          >
+            <Button
+              size="lg"
+              onClick={onGetStarted}
+              className="gradient-warm text-primary-foreground px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg font-semibold shadow-elevated hover:shadow-card transition-shadow bg-primary/90 backdrop-blur-sm"
+            >
+              Start Donating
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     </section>

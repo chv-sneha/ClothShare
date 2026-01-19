@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { HowItWorks } from '@/components/HowItWorks';
 import { ClothingForm } from '@/components/ClothingForm';
@@ -34,9 +33,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-16">
+      <main>
         <Hero onGetStarted={handleGetStarted} />
         
         <div id="how-it-works">
