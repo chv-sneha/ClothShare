@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Heart, LogIn, HelpCircle, Gift, History, MapPin, Menu, X } from 'lucide-react';
+import { Heart, LogIn, HelpCircle, Gift, History, MapPin, Menu, X, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLocation } from '@/hooks/useLocation';
 import { useState } from 'react';
 
 interface HeroProps {
@@ -12,6 +13,7 @@ interface HeroProps {
 export function Hero({ onGetStarted }: HeroProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -19,7 +21,7 @@ export function Hero({ onGetStarted }: HeroProps) {
       {/* Navigation overlay on SVG */}
       <div className="absolute top-0 left-0 right-0 z-20 p-4 sm:p-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <motion.div
               whileHover={{ rotate: [0, -10, 10, 0] }}
               transition={{ duration: 0.5 }}
@@ -33,7 +35,7 @@ export function Hero({ onGetStarted }: HeroProps) {
           </div>
           
           {/* Desktop Navigation Items */}
-          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             <button 
               onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
               className="text-white/90 hover:text-white transition-colors flex items-center gap-2 text-sm xl:text-base"
@@ -180,6 +182,7 @@ export function Hero({ onGetStarted }: HeroProps) {
           )}
         </AnimatePresence>
       </div>
+      
       {/* SVG Background */}
       <div className="absolute inset-0 w-full h-full">
         <motion.div
@@ -202,8 +205,37 @@ export function Hero({ onGetStarted }: HeroProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
-          className="text-center mt-16 sm:mt-0"
+          className="text-center mt-24 sm:mt-16"
         >
+          {/* Location Display */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.6 }}
+            className="mb-8"
+          >
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 text-white/90 text-sm">
+              {location.loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Detecting your location...</span>
+                </>
+              ) : location.error ? (
+                <>
+                  <MapPin className="w-4 h-4" />
+                  <span>Location access needed</span>
+                </>
+              ) : (
+                <>
+                  <MapPin className="w-4 h-4" />
+                  <span className="max-w-xs truncate">
+                    {location.address || 'Location detected'}
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.div>
+
           {/* CTA Button */}
           <motion.div
             whileHover={{ scale: 1.05 }}

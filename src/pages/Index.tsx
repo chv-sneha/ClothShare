@@ -16,8 +16,8 @@ const Index = () => {
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleFormSubmit = (items: ClothingItem[]) => {
-    const results = findBestMatches(items);
+  const handleFormSubmit = async (items: ClothingItem[]) => {
+    const results = await findBestMatches(items);
     setMatchResults(results);
     
     // Scroll to results after a short delay
